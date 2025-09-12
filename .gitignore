@@ -1,0 +1,6 @@
+config/
+cache/
+media/
+theme/
+guide/
+.env
