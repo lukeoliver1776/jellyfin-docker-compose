@@ -1,0 +1,30 @@
+#Simple Jellyfin Docker Compose file with user permissions, healthchecks, logging.
+#No GPU support
+
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:10.9.7 
+    container_name: jellyfin
+    user: "${PUID}:${PGID}" # run as your host user
+    ports:
+      - "${JELLYFIN_PORT:-8096}:8096"
+    environment:
+      - TZ=${TZ:-America/New_York}
+    volumes:
+      - ./config:/config
+      - ./cache:/cache
+      - ./media:/media:ro
+      - ./theme:/theme
+      - ./guide:/data/guide
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8096"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

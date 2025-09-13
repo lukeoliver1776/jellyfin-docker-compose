@@ -1,0 +1,15 @@
+#Barebones docker-compose file for Jellyfin
+
+version: "3.9"
+
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:10.9.7
+    container_name: jellyfin
+    ports:
+      - "8096:8096"
+    volumes:
+      - ./config:/config
+      - ./cache:/cache
+      - ./media:/media:ro
+    restart: unless-stopped

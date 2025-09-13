@@ -1,0 +1,35 @@
+# Simple Jellyfin Docker Compose file with NVIDIA GPU support, user permissions, healthchecks, logging.
+# Requires nvidia-container-toolkit installed on the host.
+# See README for details on non NVIDIA GPU support.
+
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:10.9.7
+    container_name: jellyfin
+    user: "${PUID}:${PGID}"
+    # NVIDIA GPU (works with nvidia-container-toolkit installed)
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
+      - NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:-all}
+      - TZ=${TZ:-America/New_York}
+    ports:
+      - "${JELLYFIN_PORT:-8096}:8096"
+    volumes:
+      - ./config:/config
+      - ./cache:/cache
+      - ./media:/media:ro
+      - ./theme:/theme
+      - ./guide:/data/guide
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8096"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
