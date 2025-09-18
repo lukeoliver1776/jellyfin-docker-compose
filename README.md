@@ -6,9 +6,9 @@ This repository provides three Docker Compose configurations for running [Jellyf
 
 ## Files
 
-- `compose/docker-compose.bare.yml`
-- `compose/docker-compose.yml` (Or use the official Jellyfin compose [here](https://jellyfin.org/docs/general/installation/container).)
-- `compose/docker-compose.gpu.yml`
+- `docker-compose.bare.yml`
+- `docker-compose.yml` (Or use the official Jellyfin compose [here](https://jellyfin.org/docs/general/installation/container).)
+- `docker-compose.gpu.yml`
 - `.env.example`
 
 ---
@@ -29,7 +29,7 @@ cd jellyfin-docker-compose
 
 ### Option A — Bare (minimal)
 ```bash
-docker compose -f compose/docker-compose.bare.yml up -d
+docker compose -f docker-compose.bare.yml up -d
 ```
 Access Jellyfin: [http://YOURHOST:<JELLYFIN_PORT>](http://YOURHOST:<JELLYFIN_PORT>)
 
@@ -39,7 +39,7 @@ Access Jellyfin: [http://YOURHOST:<JELLYFIN_PORT>](http://YOURHOST:<JELLYFIN_POR
 ```bash
 cp .env.example .env
 # edit PUID/PGID/JELLYFIN_PORT/TZ/PUBLISHED_URL as needed
-docker compose -f compose/docker-compose.yml up -d
+docker compose -f docker-compose.yml up -d
 ```
 
 ---
@@ -51,7 +51,7 @@ docker compose -f compose/docker-compose.yml up -d
 ```bash
 cp .env.example .env
 # leave NVIDIA_* defaults or set specific GPU IDs
-docker compose -f compose/docker-compose.gpu.yml up -d
+docker compose -f docker-compose.gpu.yml up -d
 ```
 
 ---
