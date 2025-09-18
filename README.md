@@ -2,34 +2,21 @@
 
 This repository provides three Docker Compose configurations for running [Jellyfin](https://jellyfin.org). Choose the one that fits your system:
 
-- **Bare** — minimal, safe defaults (no `.env`, no healthcheck).  
-- **Non-GPU** — recommended default with `.env`, healthcheck, and logging limits.  
-- **GPU (NVIDIA)** — same as Non-GPU plus NVIDIA hardware acceleration.  
-
 ---
 
 ## Files
 
-- `compose/docker-compose.bare.yml` — minimal, pinned image, persistent volumes, restart policy.  
-- `compose/docker-compose.nogpu.yml` — safe default (no GPU), `.env` for PUID/PGID/port/TZ, healthcheck, log limits, read-only media.  
-- `compose/docker-compose.gpu.yml` — Non-GPU plus NVIDIA runtime/env for hardware acceleration.  
-- `.env.example` — sample environment file.  
-- `.gitignore` — ignores persistent data and local `.env`.  
+- `compose/docker-compose.bare.yml`
+- `compose/docker-compose.nogpu.yml` (Or use the official Jellyfin compose [here](https://jellyfin.org/docs/general/installation/container).)
+- `compose/docker-compose.gpu.yml`
+- `.env.example`
 
 ---
 
 ## Prerequisites
 
-- Docker Engine + Docker Compose Plugin installed.  
-- Create these host folders for persistent Jellyfin data:  
-  ```bash
-  ./config ./cache ./media ./theme ./guide
-  ```
-
-**For GPU variant**:
-- NVIDIA GPU + drivers  
-- [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)  
-
+- Docker Engine + docker-compose plugin.
+- Your choice of docker compose file.
 ---
 
 ## Quick Start
@@ -44,7 +31,7 @@ cd jellyfin-docker-compose
 ```bash
 docker compose -f compose/docker-compose.bare.yml up -d
 ```
-Access Jellyfin: [http://YOURHOST:8096](http://YOURHOST:8096)
+Access Jellyfin: [http://YOURHOST:<JELLYFIN_PORT>](http://YOURHOST:<JELLYFIN_PORT>)
 
 ---
 
@@ -58,6 +45,9 @@ docker compose -f compose/docker-compose.nogpu.yml up -d
 ---
 
 ### Option C — NVIDIA GPU
+
+> Prerequisite: NVIDIA drivers and [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) must be installed on the host.
+
 ```bash
 cp .env.example .env
 # leave NVIDIA_* defaults or set specific GPU IDs
@@ -68,7 +58,7 @@ docker compose -f compose/docker-compose.gpu.yml up -d
 
 ### Check Container Status
 ```bash
-docker compose -f compose/docker-compose.nogpu.yml ps
+docker ps
 ```
 
 Example:
@@ -76,35 +66,6 @@ Example:
 NAME       IMAGE                     SERVICE    STATUS              PORTS
 jellyfin   jellyfin/jellyfin:10.9.7  jellyfin   running (healthy)   0.0.0.0:8096->8096/tcp
 ```
-
----
-
-## 📑 Compose Variants in Detail
-
-### 1. Bare
-- File: `compose/docker-compose.bare.yml`  
-- Pinned Jellyfin image  
-- Volumes: `./config`, `./cache`, `./media:ro`  
-- Port 8096 exposed  
-- Restart policy: `unless-stopped`  
-
----
-
-### 2. Non-GPU
-- File: `compose/docker-compose.nogpu.yml`  
-- `.env` variables for PUID, PGID, JELLYFIN_PORT, TZ, optional PUBLISHED_URL  
-- Healthcheck probes `http://localhost:8096`  
-- Log rotation (max-size, max-file)  
-- `./media` mounted read-only  
-
----
-
-### 3. NVIDIA GPU
-- File: `compose/docker-compose.gpu.yml`  
-- Same as Non-GPU  
-- Adds NVIDIA runtime and env vars:
-  - `NVIDIA_VISIBLE_DEVICES` (default `all`)  
-  - `NVIDIA_DRIVER_CAPABILITIES` (default `all`)  
 
 ---
 
